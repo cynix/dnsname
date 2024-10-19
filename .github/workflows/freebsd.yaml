@@ -1,0 +1,37 @@
+name: FreeBSD
+
+on:
+  push:
+    branches:
+      - freebsd
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean --snapshot
+
+      - name: Create release
+        run: |
+          if gh release view edge; then
+            gh release delete --cleanup-tag --yes edge
+          fi
+          gh release create --latest=true --notes=${{ github.sha }} --title=edge edge ./dist/*.tar.gz
+        env:
+          GH_TOKEN: ${{ github.token }}

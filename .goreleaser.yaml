@@ -1,0 +1,26 @@
+version: 2
+project_name: dnsname
+builds:
+  - main: ./plugins/meta/dnsname
+    flags:
+      - -mod=vendor
+      - -v
+      - -trimpath
+    ldflags:
+      - -X main.gitCommit={{ .ShortCommit }}
+      - -s
+      - -buildid=
+    env:
+      - CGO_ENABLED=0
+    targets:
+      - freebsd_amd64
+      - freebsd_arm64
+snapshot:
+  version_template: '{{ .ShortCommit }}'
+archives:
+  - format: tar.gz
+    files:
+      - LICENSE
+    name_template: '{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+release:
+  disable: true

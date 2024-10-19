@@ -11,7 +11,6 @@ import (
 	"text/template"
 
 	"github.com/containernetworking/plugins/plugins/ipam/host-local/backend/disk"
-	"github.com/coreos/go-iptables/iptables"
 	"github.com/sirupsen/logrus"
 )
 
@@ -53,20 +52,6 @@ func checkForDNSMasqConfFile(conf dnsNameFile) error {
 	newConfig, err := generateDNSMasqConfig(conf)
 	if err != nil {
 		return err
-	}
-	ip, err := iptables.New()
-	if err != nil {
-		return err
-	}
-	args := []string{"-i", conf.NetworkInterface, "-p", "udp", "-m", "udp", "--dport", "53", "-j", "ACCEPT"}
-	exists, err := ip.Exists("filter", "INPUT", args...)
-	if err != nil {
-		return err
-	}
-	if !exists {
-		if err := ip.Insert("filter", "INPUT", 1, args...); err != nil {
-			return err
-		}
 	}
 	// Generate the template and compile it.
 	return ioutil.WriteFile(conf.ConfigFile, newConfig, 0700)
