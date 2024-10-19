@@ -25,7 +25,7 @@ local=/{{.Domain}}/
 domain={{.Domain}}
 expand-hosts
 pid-file={{.PidFile}}
-except-interface=lo
+except-interface=lo*
 bind-dynamic
 no-hosts
 interface={{.NetworkInterface}}

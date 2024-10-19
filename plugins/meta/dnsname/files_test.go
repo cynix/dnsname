@@ -14,7 +14,7 @@ local=/foobar.org/
 domain=foobar.org
 expand-hosts
 pid-file=/run/containers/cni/dnsname/cni0/pidfile
-except-interface=lo
+except-interface=lo*
 bind-dynamic
 no-hosts
 interface=cni0
